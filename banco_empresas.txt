@@ -1,0 +1,5 @@
+ID;Nome;CNPJ;Email;Senha;Cidade;UF;Descricao
+1;Rede Solar;12345678000100;contato@redesolar.com;emp123;Recife;PE;Projetos residenciais com atendimento personalizado
+2;SunPE Energia;98765432000100;admin@sunpe.com;emp456;Recife;PE;Integradora com foco em sistemas hibridos
+3;Plena Luz Solar;11223344000100;plena@plena.com;emp789;Caruaru;PE;Referencia no Agreste com mais de 200 instalacoes
+4;Solar;45.099.263/0001-38;solarecife@gmail.com;sol123;Recife;Pernambuco;Somos a melhor empresa de energia solar da RMR.
