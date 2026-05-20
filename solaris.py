@@ -93,7 +93,4 @@ def menu_principal():
             print("Opcao invalida. Tente novamente.")
 
 # inicia o programa
-
-# Uma comentario legal para testar o commit
-#oioioi
 menu_principal()
