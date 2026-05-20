@@ -3,10 +3,14 @@
 from funcoes_consumidor import cadastrar_consumidor, login_consumidor, listar_empresas, meus_orcamentos, comparar_orcamentos, remover_orcamento
 from funcoes_empresa import cadastrar_empresa, login_empresa, enviar_orcamento, orcamentos_enviados, ver_consumidores
 from funcoes_consumidor import cadastrar_consumidor, login_consumidor, listar_empresas, meus_orcamentos, comparar_orcamentos, remover_orcamento, solicitar_orcamento
+from datetime import datetime
+
+horario_atual = datetime.now().strftime("%H:%M")
 
 # menu do consumidor que aparece depois que ele faz login
 def menu_consumidor(usuario):
     while True:
+        print(f"\n Horario atual: {horario_atual}")
         print("\n" + "-" * 40)
         print("  Ola, " + usuario["Nome"] + "!")
         print("-" * 40)
