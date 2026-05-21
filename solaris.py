@@ -6,11 +6,12 @@ from funcoes_consumidor import cadastrar_consumidor, login_consumidor, listar_em
 from datetime import datetime
 
 horario_atual = datetime.now().strftime("%H:%M")
+data_atual = datetime.now().strftime("%d/%m/%Y")
 
 # menu do consumidor que aparece depois que ele faz login
 def menu_consumidor(usuario):
     while True:
-        print("\n" + "Horario atual: " + horario_atual + "\n" + "-" * 40)
+        print("\n" + "Horario atual: " + horario_atual +"| Data: " + data_atual + "\n" + "-" * 40)
         print("  Ola, " + usuario["Nome"] + "!")
         print("-" * 40)
         print("  1. Buscar empresas")
@@ -39,7 +40,7 @@ def menu_consumidor(usuario):
 # menu da empresa que aparece depois que ela faz login
 def menu_empresa(empresa):
     while True:
-        print("\n" + "Horario atual: " + horario_atual + "\n----------------------------------------")
+        print("\n" + "Horario atual: " + horario_atual +"| Data: " + data_atual + "\n----------------------------------------")
         print("  Painel: " + empresa["Nome"])
         print("----------------------------------------")
         print("  1. Ver consumidores")
