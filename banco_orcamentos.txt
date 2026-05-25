@@ -6,3 +6,6 @@ ID;Empresa_ID;Consumidor_ID;Potencia_kWp;Qtd_Paineis;Painel;Inversor;Tipo_Invers
 5;3;4;5;6,66;Marca e modelo;Marca e modelo;Microinversor;5000.0;4000.0;3000.0;2000.0;14000.0;2.8;ativo
 6;1;1;4.5;10;Paineis Solaris;Inversoris;Microinversor;4000.0;3000.0;2000.0;2000.0;11000.0;2.44;ativo
 7;2;3;250;10;SunPE;micro;Hibrido;2000.0;1500.0;300.0;600.0;4400.0;0.02;ativo
+8;1;6;400;10;Solaris;Generic;String;1000.0;500.0;900.0;20.0;2420.0;0.01;ativo
+9;4;6;50;10;Kraken;multlaser;String;2500.0;400.0;200.0;100.0;3200.0;0.06;ativo
+10;2;5;123;10;isis;laal;Hibrido;1000.0;200.0;100.0;20.0;1320.0;0.01;ativo

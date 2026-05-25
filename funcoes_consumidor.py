@@ -68,6 +68,18 @@ def listar_empresas():
 # consumidor solicita orcamento a uma empresa
 def solicitar_orcamento(consumidor_id):
     print("\n=== SOLICITAR ORCAMENTO ===")
+    # Verifica se a  existe no banco de dados exclusivo para empresas
+    consumidores = ler_arquivo("banco_consumidores.txt")
+    consumidor_atual = None
+    for cons in consumidores:
+        if cons["ID"] == consumidor_id:
+            consumidor_atual = cons
+            break
+    
+    if consumidor_atual is None:
+        print("Consumidor nao encontrado.")
+        return
+
     # mostra as empresas disponiveis
     lista = ler_arquivo("banco_empresas.txt")
     for emp in lista:
@@ -87,15 +99,73 @@ def solicitar_orcamento(consumidor_id):
             encontrou = True
             nome_emp = emp["Nome"]
     
-    if encontrou == True:
-        print("\nSolicitacao enviada para " + nome_emp + "!")
-        print("Aguarde o orcamento personalizado.")
-        print("A empresa tera acesso aos seus dados (CEP, conta, tipo de imovel)")
-        print("para montar o orcamento ideal para voce.")
-    else:
-        print("Empresa não encontrada.")        
+    if encontrou == false:
+        print("Empresa nao encontrada.")
+        return
 
+    # Gera um ID para a solicitacao de orçamento
+    from datetime import datetime
+    solicitacoes = ler_arquivo("banco_solicitacoes.txt") if arquivo_existe("banco_solicitacoes.txt") else []
+    novo_id = str(proximo_id("banco_solicitacoes.txt"))
 
+    # Monta a solicitacao com os dados do consumidor
+    solicitacao = {
+        "ID": novo_id,
+        "Consumidor_ID": consumidor_id,
+        "Empresa_ID": escolha,
+        "Data_Solicitacao": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+        "Status": "pendente",
+        "CEP": consumidor_atual["CEP"],
+        "Valor_Conta": consumidor_atual["Valor_Conta"],
+        "Tipo_Imovel": consumidor_atual["Tipo_Imovel"]
+    }      
+    
+    # Grava a solicitacao no arquivo
+    gravar_linha("banco_solicitacoes.txt", solicitacao)
+    print("===== Solicitação envida com sucesso =====")
+    print(f"Empresa: {encontrou['Nome']}")
+    print(f"Data: {solicitacao['Data_Solicitacao']}")
+    print("\n a empresa foi socilitada e enviara o orçamento em breve. Fique atento a notificação")
+    print("=" * 50)
+
+# Função auxiliar para verificar se um arquivo existe
+def arquivo_existe(nome_arquivo):
+    try:
+        with open(nome_arquivo, "r", encoding="utf-8") as f:
+            return True
+    except FileNotFoundError:
+        return False
+
+# Mostra as coicitacoes de orçamento que o consumidor fez e os status de cada uma
+def minhas_solicitacoes(consumidor_id):
+    print("SUAS SOLICITACOES DE ORCAMENTO:")
+
+    if not arquivo_existe("banco_solicitacoes.txt"):
+        print("Voce ainda nao fez nenhuma solicitacao.")
+        return
+    
+    solicitacoes = ler_arquivo("banco_solicitacoes.txt")
+    empresas = ler_arquivo("banco_empresas.txt")
+
+    encontrou = False
+    for sol in solicitacoes:
+        if sol["Consumidor_ID"] == consumidor_id:
+            encontrou = True
+
+            # Busca nome da empresa
+            nome_emp = "Empresa " + sol["Empresa_ID"]
+            for emp in empresas:
+                if emp["ID"] == sol["Empresa_ID"]:
+                    nome_emp = emp["Nome"]
+                    break
+
+            print(f"[{sol['ID']}] {nome_emp} - {sol['Data_Solicitacao']} - Status: {sol['Status']}")
+            print(f"    Data: {sol['Data_Solicitacao']}'")
+            print(f"    Status: {sol['Status']}")
+            print(f"    CEP: {sol['CEP']}" | f"    Valor conta: R$ {sol['Valor_Conta']}" | f"    Tipo imovel: {sol['Tipo_Imovel']}")
+
+        if not encontrou:
+            print("Voce ainda nao fez nenhuma solicitacao.")
 
 
 # mostra os orcamentos que o consumidor recebeu

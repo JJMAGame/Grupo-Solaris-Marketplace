@@ -3,6 +3,13 @@
 
 from funcoes_arquivo import ler_arquivo, gravar_linha, proximo_id
 
+def arquivo_existe(nome_arquivo):
+    try:
+        with open(nome_arquivo, "r") as f:
+            return True
+    except FileNotFoundError:
+        return False
+
 # cadastro de nova empresa, pede os dados e grava no txt
 def cadastrar_empresa():
     print("CADASTRO DE EMPRESA:")
@@ -56,6 +63,53 @@ def ver_consumidores():
     else:
         for c in lista:
             print("[" + c["ID"] + "] " + c["Nome"] + " - CEP: " + c["CEP"] + " - Conta: R$ " + c["Valor_Conta"] + "/mes - " + c["Tipo_Imovel"])
+
+def ver_orcamentos_recebidos(empresa_id):
+    print("SOLICITAÇÕES RECEBIDAS:")
+
+    if not arquivo_existe("banco_orcamentos.txt"):
+        print("Nenhuma solicitacao recebida ainda.")
+        return
+    
+    solicitacoes = ler_arquivo("banco_orcamentos.txt")
+    consumidores = ler_arquivo("banco_consumidores.txt")
+
+    #Filtra os orcamentos recebidos para a empresa logada
+    minhas_solicitacoes = [sol for sol in solicitacoes if sol["Empresa_ID"] == empresa_id]
+
+    if len(minhas_solicitacoes) == 0:
+        print("Nenhuma solicitacao recebida ainda.")
+        return
+    
+    print(f"Total de solicitações recebidas: {len(minhas_solicitacoes)}")
+    print("-" * 50)
+
+    for sol in minhas_solicitacoes:
+        # Busca o nome do consumidor que enviou a solicitação
+        nome_cons = "Consumidor " + sol["Consumidor_ID"]
+        for cons in consumidores:
+            if cons["ID"] == sol["Consumidor_ID"]:
+                nome_cons = cons["Nome"]
+                break    
+
+        print(f"ID: {sol['ID']} | De: {nome_cons} | Potência: {sol['Potencia_kWp']} kWp | Status: {sol['Status']}")
+        print(f"Descrição: {sol.get('Descricao', 'Sem descrição')}")
+        print("-" * 50)
+
+        # Se estiver pendente, pergunta se quer enviar orçamento
+        if sol["Status"] == "pendente":
+            resposta = input("Deseja enviar um orçamento para esta solicitação? (s/n): ")
+            if resposta.lower() == "s":
+                enviar_orcamento(empresa_id)
+                # Atualiza o status da solicitação para "respondida"
+                sol["Status"] = "respondida"
+                # Salva as alterações no arquivo
+                with open("banco_orcamentos.txt", "w") as f:
+                    for s in solicitacoes:
+                        f.write(str(s) + "\n")
+                print("Orçamento enviado e solicitação marcada como respondida.")
+            else:
+                print("Orçamento não enviado. Solicitação permanece pendente.")
 
 # funcao onde a empresa preenche e envia um orcamento personalizado
 def enviar_orcamento(empresa_id):
