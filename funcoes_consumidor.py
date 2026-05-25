@@ -99,7 +99,7 @@ def solicitar_orcamento(consumidor_id):
             encontrou = True
             nome_emp = emp["Nome"]
     
-    if encontrou == false:
+    if encontrou == False:
         print("Empresa nao encontrada.")
         return
 
