@@ -96,7 +96,7 @@ def solicitar_orcamento(consumidor_id):
     nome_emp = ""
     for emp in lista:
         if emp["ID"] == escolha:
-            empresa_escolhida = True
+            empresa_escolhida = None
             nome_emp = emp["Nome"]
     
     if empresa_escolhida == None:
@@ -133,9 +133,9 @@ def solicitar_orcamento(consumidor_id):
 def arquivo_existe(nome_arquivo):
     try:
         with open(nome_arquivo, "r", encoding="utf-8") as f:
-            return None
+            return True
     except FileNotFoundError:
-        return None
+        return False
 
 # Mostra as coicitacoes de orçamento que o consumidor fez e os status de cada uma
 def minhas_solicitacoes(consumidor_id):

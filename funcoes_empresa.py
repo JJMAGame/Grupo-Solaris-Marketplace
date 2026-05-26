@@ -71,7 +71,7 @@ def ver_solicitacoes_recebidas(empresa_id):
         print("Nenhuma solicitacao recebida ainda.")
         return
     
-    solicitacoes = ler_arquivo("banco_orcamentos.txt")
+    solicitacoes = ler_arquivo("banco_solicitacoes.txt")
     consumidores = ler_arquivo("banco_consumidores.txt")
 
     #Filtra os orcamentos recebidos para a empresa logada
@@ -92,13 +92,14 @@ def ver_solicitacoes_recebidas(empresa_id):
                 nome_cons = cons["Nome"]
                 break    
 
-        print(f"ID: {sol['ID']} | De: {nome_cons} | Potência: {sol['Potencia_kWp']} kWp | Status: {sol['Status']}")
-        print(f"Descrição: {sol.get('Descricao', 'Sem descrição')}")
-        print("-" * 50)
+        print(f"[{sol['ID']}] De: {nome_cons} - Status: {sol['Status']}")
+        print(f"    Data: {sol['Data_Solicitacao']}")
+        print(f"    Status: {sol['Status']}")
+        print(f"    Dados: CEP {sol['CEP']} | Conta R$ {sol['Valor_Conta']} | {sol['Tipo_Imovel']}")
 
         # Se estiver pendente, pergunta se quer enviar orçamento
         if sol["Status"] == "pendente":
-            resposta = input("Deseja enviar um orçamento para esta solicitação? (s/n): ")
+            resposta = input(f"\n Deseja enviar um orçamento para esta solicitação? (s/n): ")
             if resposta.lower() == "s":
                 enviar_orcamento(empresa_id)
                 # Atualiza o status da solicitação para "respondida"
