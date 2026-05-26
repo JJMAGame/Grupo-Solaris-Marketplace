@@ -63,12 +63,12 @@ def listar_empresas():
     if encontrou == False:
         print("Nenhuma empresa encontrada nessa cidade.")
 
-
-
 # consumidor solicita orcamento a uma empresa
 def solicitar_orcamento(consumidor_id):
     print("\n=== SOLICITAR ORCAMENTO ===")
+    
     # Verifica se a  existe no banco de dados exclusivo para empresas
+    
     consumidores = ler_arquivo("banco_consumidores.txt")
     consumidor_atual = None
     for cons in consumidores:
@@ -92,14 +92,14 @@ def solicitar_orcamento(consumidor_id):
         return
     
     # verifica se a empresa existe
-    encontrou = False
+    empresa_escolhida = None
     nome_emp = ""
     for emp in lista:
         if emp["ID"] == escolha:
-            encontrou = True
+            empresa_escolhida = True
             nome_emp = emp["Nome"]
     
-    if encontrou == False:
+    if empresa_escolhida == None:
         print("Empresa nao encontrada.")
         return
 
@@ -122,19 +122,20 @@ def solicitar_orcamento(consumidor_id):
     
     # Grava a solicitacao no arquivo
     gravar_linha("banco_solicitacoes.txt", solicitacao)
+
     print("===== Solicitação envida com sucesso =====")
-    print(f"Empresa: {encontrou['Nome']}")
+    print(f"Empresa: {empresa_escolhida['Nome']}")
     print(f"Data: {solicitacao['Data_Solicitacao']}")
-    print("\n a empresa foi socilitada e enviara o orçamento em breve. Fique atento a notificação")
+    print("\n a empresa foi notificada e enviara o orçamento em breve. Fique atento a notificação")
     print("=" * 50)
 
 # Função auxiliar para verificar se um arquivo existe
 def arquivo_existe(nome_arquivo):
     try:
         with open(nome_arquivo, "r", encoding="utf-8") as f:
-            return True
+            return None
     except FileNotFoundError:
-        return False
+        return None
 
 # Mostra as coicitacoes de orçamento que o consumidor fez e os status de cada uma
 def minhas_solicitacoes(consumidor_id):

@@ -64,7 +64,7 @@ def ver_consumidores():
         for c in lista:
             print("[" + c["ID"] + "] " + c["Nome"] + " - CEP: " + c["CEP"] + " - Conta: R$ " + c["Valor_Conta"] + "/mes - " + c["Tipo_Imovel"])
 
-def ver_orcamentos_recebidos(empresa_id):
+def ver_solicitacoes_recebidas(empresa_id):
     print("SOLICITAÇÕES RECEBIDAS:")
 
     if not arquivo_existe("banco_orcamentos.txt"):
@@ -111,6 +111,84 @@ def ver_orcamentos_recebidos(empresa_id):
             else:
                 print("Orçamento não enviado. Solicitação permanece pendente.")
 
+    def enviar_orcamento_para_solicitacao(empresa_id, consumidor_id, solicitacao_id):
+        print(f"\n=== RESPONDENDO SOLICITACAO #{solicitacao_id} ===")
+
+        # Busca dados do consumidor
+        consumidores = ler_arquivo("banco_consumidores.txt")
+        consumidor = None
+        for cons in consumidores:
+            if cons["ID"] == consumidor_id:
+                consumidor = cons
+                break
+        if consumidor is None:
+            print("Consumidor não encontrado.")
+            return
+        
+        print(f"Enviando orçamento para: {consumidor['Nome']}")
+        print(f"Dados do consumidor:")
+        print(f"CEP: {consumidor['CEP']}")
+        print(f"Valor da conta: R$ {consumidor['Valor_Conta']}")
+        print(f"Tipo de imóvel: {consumidor['Tipo_Imovel']}")
+        
+        # Pede os dados técnicos do sistema solar
+        print("\nPreencha os dados do orçamento:")
+        pot = input("Potência total (kWp): ")
+        qtd = input("Qtd painéis: ")
+        painel = input("Marca e modelo do painel: ")
+        inversor = input("Marca e modelo do inversor: ")
+        tipo_inv = input("Tipo inversor (String/Microinversor/Híbrido): ")
+
+        # Pede os 4 custos discriminados
+        cp = float(input("Custo painéis (R$): "))
+        ci = float(input("Custo inversor (R$): "))
+        cm = float(input("Custo mão de obra (R$): "))
+        ct = float(input("Custo taxas (R$): "))
+
+        #calcula o valor total e o R$/Wp automaticamente
+        total = cp + ci + cm + ct
+        rs_wp = round(total / (float(pot) * 1000), 2)
+
+        print(f"\n>>> Valor total calculado: R$ {total}")
+        print(f">>> R$/Wp calculado: R$ {rs_wp}")
+
+        # Monta o dicionário do orçamento
+        novo_orcamento = {
+            "ID": str(proximo_id("banco_orcamentos.txt")),
+        "Empresa_ID": empresa_id,
+        "Consumidor_ID": consumidor_id,
+        "Potencia_kWp": pot,
+        "Qtd_Paineis": qtd,
+        "Painel": painel,
+        "Inversor": inversor,
+        "Tipo_Inversor": tipo_inv,
+        "Custo_Paineis": str(cp),
+        "Custo_Inversor": str(ci),
+        "Custo_Mao_Obra": str(cm),
+        "Custo_Taxas": str(ct),
+        "Valor_Total": str(total),
+        "RS_por_Wp": str(rs_wp),
+        "Status": "ativo"
+       }
+        gravar_linha("banco_orcamentos.txt", novo_orcamento)
+
+        # Atualiza o status da solicitação para "respondida"
+        atuaizar_status_solicitacao(solicitacao_id, "respondida")
+
+        print("\n Orçamento enviado com sucesso e solicitação marcada como respondida!")
+        print(f"O consumidor receberá uma notificação sobre o novo orçamento disponível.")
+
+def atuaizar_status_solicitacao(solicitacao_id, novo_status):
+    if not arquivo_existe("banco_solicitacoes.txt"):
+        return
+    
+    solicitacoes = ler_arquivo("banco_solicitacoes.txt")
+
+    # Atualiza o status da solicitação específica
+    for sol in solicitacoes:
+        if sol["ID"] == solicitacao_id:
+            sol["Status"] = novo_status
+            break
 # funcao onde a empresa preenche e envia um orcamento personalizado
 def enviar_orcamento(empresa_id):
     print("\n=== ENVIAR ORCAMENTO ===")

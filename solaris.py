@@ -1,8 +1,8 @@
 
 # importa as funcoes dos outros arquivos
 from funcoes_consumidor import cadastrar_consumidor, login_consumidor, listar_empresas, meus_orcamentos, comparar_orcamentos, remover_orcamento
-from funcoes_empresa import cadastrar_empresa, login_empresa, enviar_orcamento, orcamentos_enviados, ver_consumidores
-from funcoes_consumidor import cadastrar_consumidor, login_consumidor, listar_empresas, meus_orcamentos, comparar_orcamentos, remover_orcamento, solicitar_orcamento
+from funcoes_empresa import cadastrar_empresa, login_empresa, enviar_orcamento, orcamentos_enviados, ver_consumidores, ver_solicitacoes_recebidas
+from funcoes_consumidor import cadastrar_consumidor, login_consumidor, listar_empresas, meus_orcamentos, comparar_orcamentos, remover_orcamento, solicitar_orcamento, minhas_solicitacoes
 
 # menu do consumidor que aparece depois que ele faz login
 def menu_consumidor(usuario):
@@ -12,9 +12,10 @@ def menu_consumidor(usuario):
         print("-" * 40)
         print("  1. Buscar empresas")
         print("  2. Solicitar orcamento")
-        print("  3. Meus orcamentos")
-        print("  4. Comparar orcamentos")
-        print("  5. Remover orcamento")
+        print("  3. Minhas solicitacoes")
+        print("  4. Meus orcamentos")
+        print("  5. Comparar orcamentos")
+        print("  6. Remover orcamento")
         print("  0. Sair da conta")
         opcao = input("Escolha: ")
         if opcao == "1":
@@ -22,10 +23,12 @@ def menu_consumidor(usuario):
         elif opcao == "2":
             solicitar_orcamento(usuario["ID"])
         elif opcao == "3":
-            meus_orcamentos(usuario["ID"])
+            minhas_solicitacoes(usuario["ID"])
         elif opcao == "4":
-            comparar_orcamentos(usuario["ID"])
+            meus_orcamentos(usuario["ID"])
         elif opcao == "5":
+            comparar_orcamentos(usuario["ID"])
+        elif opcao == "6":
             remover_orcamento(usuario["ID"])
         elif opcao == "0":
             print("Saindo da conta...")
@@ -40,15 +43,18 @@ def menu_empresa(empresa):
         print("  Painel: " + empresa["Nome"])
         print("----------------------------------------")
         print("  1. Ver consumidores")
-        print("  2. Enviar orcamento")
-        print("  3. Orcamentos enviados")
+        print("  2. Ver solicitacoes recebidas")
+        print("  3. Enviar orcamento livre")
+        print("  4. Orcamentos enviados")
         print("  0. Sair da conta")
         opcao = input("Escolha: ")
         if opcao == "1":
             ver_consumidores()
         elif opcao == "2":
-            enviar_orcamento(empresa["ID"])
+            ver_solicitacoes_recebidas(empresa["ID"])
         elif opcao == "3":
+            enviar_orcamento(empresa["ID"])
+        elif opcao == "4":
             orcamentos_enviados(empresa["ID"])
         elif opcao == "0":
             print("Saindo...")
