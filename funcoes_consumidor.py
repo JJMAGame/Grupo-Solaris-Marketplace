@@ -163,7 +163,7 @@ def minhas_solicitacoes(consumidor_id):
             print(f"[{sol['ID']}] {nome_emp} - {sol['Data_Solicitacao']} - Status: {sol['Status']}")
             print(f"    Data: {sol['Data_Solicitacao']}'")
             print(f"    Status: {sol['Status']}")
-            print(f"    CEP: {sol['CEP']}" | f"    Valor conta: R$ {sol['Valor_Conta']}" | f"    Tipo imovel: {sol['Tipo_Imovel']}")
+            print(f"    CEP: {sol['CEP']} | Valor conta: R$ {sol['Valor_Conta']} | Tipo imovel: {sol['Tipo_Imovel']}")
 
         if not encontrou:
             print("Voce ainda nao fez nenhuma solicitacao.")
