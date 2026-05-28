@@ -126,7 +126,7 @@ def solicitar_orcamento(consumidor_id):
     print("===== Solicitação envida com sucesso =====")
     print(f"Empresa: {empresa_escolhida['Nome']}")
     print(f"Data: {solicitacao['Data_Solicitacao']}")
-    print("\n a empresa foi notificada e enviara o orçamento em breve. Fique atento a notificação")
+    print("\n A empresa foi notificada e enviara o orçamento em breve. Fique atento a notificação")
     print("=" * 50)
 
 # Função auxiliar para verificar se um arquivo existe
