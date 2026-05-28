@@ -96,10 +96,10 @@ def solicitar_orcamento(consumidor_id):
     nome_emp = ""
     for emp in lista:
         if emp["ID"] == escolha:
-            empresa_escolhida = None
+            empresa_escolhida = emp
             nome_emp = emp["Nome"]
     
-    if empresa_escolhida == None:
+    if empresa_escolhida is None:
         print("Empresa nao encontrada.")
         return
 
@@ -172,6 +172,12 @@ def minhas_solicitacoes(consumidor_id):
 # mostra os orcamentos que o consumidor recebeu
 def meus_orcamentos(consumidor_id):
     print("SEUS ORCAMENTOS:")
+
+    # Verifica se o arquivo existe
+    if not arquivo_existe("banco_orcamentos.txt"):
+        print("Voce ainda nao recebeu orcamentos.")
+        return
+    
     lista = ler_arquivo("banco_orcamentos.txt")
     empresas = ler_arquivo("banco_empresas.txt")
 

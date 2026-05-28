@@ -46,6 +46,25 @@ def gravar_linha(nome, registro):
     arquivo.write(linha + "\n")
     arquivo.close()
 
+def verificar_cabecalho(nome_arquivo, cabecalho_correto):
+    try:
+        with open(nome_arquivo, "r", encoding="utf-8") as f:
+            primeira_linha = f.readline().strip()
+        
+        if primeira_linha != cabecalho_correto:
+            # Se o cabeçalho está errado, recria o arquivo
+            with open(nome_arquivo, "w", encoding="utf-8") as f:
+                f.write(cabecalho_correto + "\n")
+            print(f"Arquivo {nome_arquivo} corrigido!")
+            return True
+        return False
+    except FileNotFoundError:
+        # Arquivo não existe, cria com cabeçalho correto
+        with open(nome_arquivo, "w", encoding="utf-8") as f:
+            f.write(cabecalho_correto + "\n")
+        print(f"Arquivo {nome_arquivo} criado!")
+        return True
+
 # funcao que descobre o prox ID disponivel:
 def proximo_id(nome):
     lista = ler_arquivo(nome)
