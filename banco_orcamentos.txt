@@ -1,1 +1,1 @@
-ID;Empresa_ID;Consumidor_ID;Potencia_kWp;Qtd_Paineis;Painel;Inversor;Tipo_Inversor;Custo_Paineis;Custo_Inversor;Custo_Mao_Obra;Custo_Taxas;Valor_Total;RS_por_Wp;Status
+{'ID': '1', 'Consumidor_ID': '6', 'Empresa_ID': '1', 'Data_Solicitacao': '2026-05-25 21:05:31', 'Status': 'respondida', 'CEP': '52070-380', 'Valor_Conta': '2000', 'Tipo_Imovel': 'Rural'}

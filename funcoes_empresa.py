@@ -155,7 +155,7 @@ def ver_solicitacoes_recebidas(empresa_id):
 
         # Monta o dicionário do orçamento
         novo_orcamento = {
-            "ID": str(proximo_id("banco_orcamentos.txt")),
+        "ID": str(proximo_id("banco_orcamentos.txt")),
         "Empresa_ID": empresa_id,
         "Consumidor_ID": consumidor_id,
         "Potencia_kWp": pot,
@@ -218,22 +218,23 @@ def enviar_orcamento(empresa_id):
 
     # monta o dicionario do orcamento
     novo = {
-        "ID": str(proximo_id("banco_orcamentos.txt")),
-        "Empresa_ID": empresa_id,
-        "Consumidor_ID": cons_id,
-        "Potencia_kWp": pot,
-        "Qtd_Paineis": qtd,
-        "Painel": painel,
-        "Inversor": inversor,
-        "Tipo_Inversor": tipo_inv,
-        "Custo_Paineis": str(cp),
-        "Custo_Inversor": str(ci),
-        "Custo_Mao_Obra": str(cm),
-        "Custo_Taxas": str(ct),
-        "Valor_Total": str(total),
-        "RS_por_Wp": str(rs_wp),
-        "Status": "ativo"
+    "ID": str(proximo_id("banco_orcamentos.txt")),
+    "Empresa_ID": empresa_id,
+    "Consumidor_ID": cons_id,
+    "Potencia_kWp": pot,
+    "Qtd_Paineis": qtd,
+    "Painel": painel,
+    "Inversor": inversor,
+    "Tipo_Inversor": tipo_inv,
+    "Custo_Paineis": str(cp),
+    "Custo_Inversor": str(ci),
+    "Custo_Mao_Obra": str(cm),
+    "Custo_Taxas": str(ct),
+    "Valor_Total": str(total),
+    "RS_por_Wp": str(rs_wp),
+    "Status": "ativo"
     }
+
     gravar_linha("banco_orcamentos.txt", novo)  # grava no arquivo
     print("Orcamento enviado com sucesso!")
 

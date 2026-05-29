@@ -36,9 +36,15 @@ def gravar_linha(nome, registro):
     # monta a linha com os valores na ordem certa:
     valores = []
     for campo in cabecalho:
-        valores.append(str(registro[campo]))
-    linha = ";".join(valores)  # junta tudo com ponto e virgula
-
+        # Verifica se o campo existe no registro
+        if campo in registro:
+            valores.append(str(registro[campo]))
+        else:
+            # Se não existir, adiciona vazio (evita KeyError)
+            valores.append("")
+            print(f"Aviso: Campo '{campo}' não encontrado no registro!")
+    linha = ";".join(valores)
+    
     # abre o arquivo em modo append (adiciona no final sem apagar):
     arquivo = open(nome, "a", encoding="utf-8")
     if conteudo != "" and conteudo[-1] != "\n":
