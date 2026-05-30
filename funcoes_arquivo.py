@@ -83,3 +83,141 @@ def proximo_id(nome):
             if int(registro["ID"]) > maior:
                 maior = int(registro["ID"])
         return maior + 1  # retorna o maior + 1
+    
+def arquivar_solicitacao_respondida(solicitacao, empresa_nome):
+    """Arquiva a solicitação respondida em outro arquivo"""
+    try:
+        with open("banco_solicitacoes_respondidas.txt", "a", encoding="utf-8") as f:
+            from datetime import datetime
+            data_resposta = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+            linha = f"{solicitacao['ID']};{solicitacao['Consumidor_ID']};{solicitacao['Empresa_ID']};{solicitacao['Data_Solicitacao']};respondida;{data_resposta};{empresa_nome}\n"
+            f.write(linha)
+    except:
+        pass
+
+def deletar_linha(nome_arquivo, id_valor, campo_id="ID"):
+    try:
+        with open(nome_arquivo, "r", encoding="utf-8") as f:
+            linhas = f.readlines()
+        
+        if len(linhas) == 0:
+            print(f"Arquivo {nome_arquivo} está vazio.")
+            return False
+        
+        cabecalho = linhas[0]
+        novas_linhas = [cabecalho]
+        deletou = False
+
+        for linha in linhas[1:]:
+            if linha.strip():
+                # Pega o primeiro campo (ID)
+                valores = linha.strip().split(";")
+                if len(valores) > 0 and valores[0] != str(id_valor):
+                    novas_linhas.append(linha)
+                else:
+                    deletou = True
+                    print(f"  -> Linha com ID {id_valor} removida de {nome_arquivo}")
+        
+        if deletou:
+            with open(nome_arquivo, "w", encoding="utf-8") as f:
+                f.writelines(novas_linhas)
+            return True
+        else:
+            print(f"  -> ID {id_valor} não encontrado em {nome_arquivo}")
+            return False
+            
+    except FileNotFoundError:
+        print(f"Arquivo {nome_arquivo} não encontrado.")
+        return False
+    except Exception as e:
+        print(f"Erro ao deletar linha: {e}")
+        return False
+
+def arquivar_linha(nome_arquivo_origem, nome_arquivo_destino, id_valor, campos_extras=None):
+    try:
+        # Lê o arquivo de origem
+        with open(nome_arquivo_origem, "r", encoding="utf-8") as f:
+            linhas = f.readlines()
+        
+        if len(linhas) == 0:
+            print(f"Arquivo {nome_arquivo_origem} está vazio.")
+            return False
+        
+        cabecalho_origem = linhas[0].strip().split(";")
+        linha_arquivar = None
+        novas_linhas = [linhas[0]]
+
+        # Procura a linha com o ID
+        for linha in linhas[1:]:
+            if linha.strip():
+                valores = linha.strip().split(";")
+                if len(valores) > 0 and valores[0] == str(id_valor):
+                    linha_arquivar = valores
+                else:
+                    novas_linhas.append(linha)
+        
+        if linha_arquivar is None:
+            print(f"ID {id_valor} não encontrado em {nome_arquivo_origem}")
+            return False
+        
+        # Prepara os dados para o arquivo de destino
+        # Verifica se o arquivo de destino existe e tem cabeçalho
+        import os
+        if not os.path.exists(nome_arquivo_destino):
+            # Cria cabeçalho para o arquivo de destino
+            with open(nome_arquivo_destino, "w", encoding="utf-8") as f:
+                # Cabeçalho básico + campos extras
+                cabecalho_destino = cabecalho_origem.copy()
+                if campos_extras:
+                    for campo in campos_extras.keys():
+                        if campo not in cabecalho_destino:
+                            cabecalho_destino.append(campo)
+                f.write(";".join(cabecalho_destino) + "\n")
+
+        # Lê o cabeçalho do destino
+        with open(nome_arquivo_destino, "r", encoding="utf-8") as f:
+            cabecalho_destino = f.readline().strip().split(";")
+        
+        # Monta o dicionário da linha a ser arquivada
+        registro = {}
+        for i, campo in enumerate(cabecalho_origem):
+            if i < len(linha_arquivar):
+                registro[campo] = linha_arquivar[i]
+        
+        # Adiciona campos extras
+        if campos_extras:
+            for campo, valor in campos_extras.items():
+                registro[campo] = valor
+        
+        # Monta a linha no formato do destino
+        valores_destino = []
+        for campo in cabecalho_destino:
+            if campo in registro:
+                valores_destino.append(str(registro[campo]))
+            else:
+                valores_destino.append("")
+        
+        linha_destino = ";".join(valores_destino)
+        
+        # Adiciona a linha no arquivo de destino
+        with open(nome_arquivo_destino, "a", encoding="utf-8") as f:
+            # Verifica se precisa de quebra de linha
+            f.seek(0, 2)  # Vai para o final
+            pos = f.tell()
+            if pos > 0:
+                f.write("\n")
+            f.write(linha_destino)
+        
+        # Reescreve o arquivo de origem sem a linha arquivada
+        with open(nome_arquivo_origem, "w", encoding="utf-8") as f:
+            f.writelines(novas_linhas)
+
+        print(f"✅ Linha ID {id_valor} arquivada de {nome_arquivo_origem} para {nome_arquivo_destino}")
+        return True
+        
+    except FileNotFoundError:
+        print(f"Arquivo {nome_arquivo_origem} ou {nome_arquivo_destino} não encontrado.")
+        return False
+    except Exception as e:
+        print(f"Erro ao arquivar linha: {e}")
+        return False

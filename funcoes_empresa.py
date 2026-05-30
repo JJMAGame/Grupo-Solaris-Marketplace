@@ -1,7 +1,7 @@
 # === FUNCOES DA EMPRESA ===
 # tudo que a empresa integradora faz no sistema
 
-from funcoes_arquivo import ler_arquivo, gravar_linha, proximo_id
+from funcoes_arquivo import ler_arquivo, gravar_linha,deletar_linha, arquivar_linha ,proximo_id
 
 def arquivo_existe(nome_arquivo):
     try:
@@ -98,21 +98,14 @@ def ver_solicitacoes_recebidas(empresa_id):
         print(f"    Dados: CEP {sol['CEP']} | Conta R$ {sol['Valor_Conta']} | {sol['Tipo_Imovel']}")
 
         # Se estiver pendente, pergunta se quer enviar orçamento
-        if sol["Status"] == "pendente":
-            resposta = input(f"\n Deseja enviar um orçamento para esta solicitação? (s/n): ")
-            if resposta.lower() == "s":
-                enviar_orcamento(empresa_id)
-                # Atualiza o status da solicitação para "respondida"
-                sol["Status"] = "respondida"
-                # Salva as alterações no arquivo
-                with open("banco_orcamentos.txt", "w") as f:
-                    for s in solicitacoes:
-                        f.write(str(s) + "\n")
-                print("Orçamento enviado e solicitação marcada como respondida.")
-            else:
-                print("Orçamento não enviado. Solicitação permanece pendente.")
+        resposta = input("Deseja enviar um orçamento para esta solicitação? (s/n): ")
+        if resposta.lower() == "s":
+            # Envia o orçamento
+            enviar_orcamento_para_solicitacao(empresa_id, sol["Consumidor_ID"], sol["ID"])
+        else:
+            print("Solicitação mantida como pendente.\n")
 
-    def enviar_orcamento_para_solicitacao(empresa_id, consumidor_id, solicitacao_id):
+def enviar_orcamento_para_solicitacao(empresa_id, consumidor_id, solicitacao_id):
         print(f"\n=== RESPONDENDO SOLICITACAO #{solicitacao_id} ===")
 
         # Busca dados do consumidor
@@ -173,23 +166,22 @@ def ver_solicitacoes_recebidas(empresa_id):
        }
         gravar_linha("banco_orcamentos.txt", novo_orcamento)
 
-        # Atualiza o status da solicitação para "respondida"
-        atuaizar_status_solicitacao(solicitacao_id, "respondida")
-
-        print("\n Orçamento enviado com sucesso e solicitação marcada como respondida!")
-        print(f"O consumidor receberá uma notificação sobre o novo orçamento disponível.")
-
-def atuaizar_status_solicitacao(solicitacao_id, novo_status):
-    if not arquivo_existe("banco_solicitacoes.txt"):
-        return
+        # ARQUIVAR E DELETA a solicitação do arquivo (em vez de atualizar status)
+        from datetime import datetime
+        arquivar_linha(
+        "banco_solicitacoes.txt", 
+        "banco_solicitacoes_arquivadas.txt", 
+        solicitacao_id,
+        campos_extras={
+            "Data_Resposta": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+            "Empresa_Respondeu": empresa_id
+        }
+       )
+        deletar_linha("banco_solicitacoes.txt", solicitacao_id)
     
-    solicitacoes = ler_arquivo("banco_solicitacoes.txt")
+        print("\n Orçamento enviado com sucesso!")
+        print(f"A solicitação foi removida da lista de pendentes.")
 
-    # Atualiza o status da solicitação específica
-    for sol in solicitacoes:
-        if sol["ID"] == solicitacao_id:
-            sol["Status"] = novo_status
-            break
 # funcao onde a empresa preenche e envia um orcamento personalizado
 def enviar_orcamento(empresa_id):
     print("\n=== ENVIAR ORCAMENTO ===")
