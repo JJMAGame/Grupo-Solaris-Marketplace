@@ -1,1 +1,1 @@
-ID;Empresa_ID;Consumidor_ID;Potencia_kWp;Qtd_Paineis;Painel;Inversor;Tipo_Inversor;Custo_Paineis;Custo_Inversor;Custo_Mao_Obra;Custo_Taxas;Valor_Total;RS_por_Wp;Status1;1;6;120;20;Core;Antigas;Hibrido;2000.0;10000.0;200.0;10.0;12210.0;0.1;ativo
+ID;Empresa_ID;Consumidor_ID;Potencia_kWp;Qtd_Paineis;Painel;Inversor;Tipo_Inversor;Custo_Paineis;Custo_Inversor;Custo_Mao_Obra;Custo_Taxas;Valor_Total;RS_por_Wp;Status
