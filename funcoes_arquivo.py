@@ -27,30 +27,34 @@ def ler_arquivo(nome):
 
 # função que adiciona uma nova linha no final de um arquivo txt:
 def gravar_linha(nome, registro):
-    # abre o arquivo so pra ler o cabecalho e saber a ordem dos campos
-    arquivo = open(nome, "r", encoding="utf-8")
-    cabecalho = arquivo.readline().strip().split(";")
-    conteudo = arquivo.read()  # le o resto do arquivo
-    arquivo.close()
+    import os
 
-    # monta a linha com os valores na ordem certa:
+    # Verifica se o arquivo existe
+    arquivo_existe = os.path.exists(nome)
+
+    if not arquivo_existe:
+        # Cria arquivo com cabeçalho
+        cabecalho = list(registro.keys())
+        with open(nome, "w", encoding="utf-8") as f:
+            f.write(";".join(cabecalho) + "\n")  # Garante a quebra de linha
+    else:
+        # Le o cabeçalho existente
+        with open(nome, "r", encoding="utf-8") as f:
+            cabecalho = f.readline().strip().split(";")
+
+    # Monta a linha com os valores
     valores = []
     for campo in cabecalho:
-        # Verifica se o campo existe no registro
         if campo in registro:
             valores.append(str(registro[campo]))
         else:
-            # Se não existir, adiciona vazio (evita KeyError)
             valores.append("")
-            print(f"Aviso: Campo '{campo}' não encontrado no registro!")
+
     linha = ";".join(valores)
-    
-    # abre o arquivo em modo append (adiciona no final sem apagar):
-    arquivo = open(nome, "a", encoding="utf-8")
-    if conteudo != "" and conteudo[-1] != "\n":
-        arquivo.write("\n")
-    arquivo.write(linha + "\n")
-    arquivo.close()
+
+    # Adiciona a linha no final
+    with open(nome, "a", encoding="utf-8") as f:
+        f.write(linha + "\n")  # Garante a quebra de linha no final
 
 def verificar_cabecalho(nome_arquivo, cabecalho_correto):
     try:
