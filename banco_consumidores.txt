@@ -6,3 +6,4 @@ ID;Nome;Email;Senha;CEP;Valor_Conta;Tipo_Imovel
 5;Zacarias de Sousa;zacasou@gmail.com;7654321;52060-380;230;Comercial
 6;admin;admin@admin.com;admin9;52070-380;2000;Rural
 7;Jorge;jorginho123@hotmail.com;jor123;52110515;354;Casa
+8;test;test@test.com;test;123321-123;300;Casa
