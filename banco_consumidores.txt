@@ -1,0 +1,8 @@
+ID;Nome;Email;Senha;CEP;Valor_Conta;Tipo_Imovel
+1;Laura Brafman;laura@email.com;senha123;50000000;350.0;Casa
+2;João Silva;joao@email.com;senha456;51000000;420.0;Apartamento
+3;José Jorge de Oliveira;josejorge@gmail.com;1234567;53040-320;420;Casa
+4;Matheus Lobo de Vaz Araújo;mlva@cesar.org;euamolaura;52020-140;300;Apartamento
+5;Zacarias de Sousa;zacasou@gmail.com;7654321;52060-380;230;Comercial
+6;admin;admin@admin.com;admin9;52070-380;2000;Rural
+7;test;test@test.com;test;123321-123;300;Casa
