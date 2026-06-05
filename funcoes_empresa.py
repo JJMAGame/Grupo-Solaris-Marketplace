@@ -185,6 +185,11 @@ def enviar_orcamento_para_solicitacao(empresa_id, consumidor_id, solicitacao_id)
 # funcao onde a empresa preenche e envia um orcamento personalizado
 def enviar_orcamento(empresa_id):
     print("\n=== ENVIAR ORCAMENTO ===")
+
+    cancelar = input("Deseja enviar um orçamento livre?(s/n): ")
+    if cancelar.lower() != "s":
+        print("Orçamento livre cancelado.")
+        return
     ver_consumidores()  # mostra os consumidores disponiveis
     cons_id = input("\nPara qual consumidor? (ID): ")
 
