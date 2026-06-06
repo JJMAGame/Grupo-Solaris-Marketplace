@@ -8,3 +8,4 @@ ID;Nome;Email;Senha;CEP;Valor_Conta;Tipo_Imovel
 7;Jorge;jorginho123@hotmail.com;jor123;52110515;354;Casa
 8;test;test@test.com;test;123321-123;300;Casa
 9;José Jorge;jorginhoajp1234@gmail.com;jor1234;5299999999;400;Casa
+10;José jorge;macedo@gmail.com;jor12345;52999999;400;Rural
