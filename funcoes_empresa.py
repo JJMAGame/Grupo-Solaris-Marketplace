@@ -190,8 +190,9 @@ def enviar_orcamento(empresa_id):
     if cancelar.lower() != "s":
         print("Orçamento livre cancelado.")
         return
+
     ver_consumidores()  # mostra os consumidores disponiveis
-    cons_id = input("\nPara qual consumidor? (ID): ")
+    cons_id = input("\nPara qual consumidor? (ID), caso queira volta para o menu digite 0: ")
 
     # pede os dados tecnicos do sistema solar
     print("\nPreencha os dados do orcamento:")
