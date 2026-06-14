@@ -210,6 +210,29 @@ def meus_orcamentos(consumidor_id):
     if encontrou == False:
         print("Você ainda não recebeu orcamentos.")
 
+
+# conta orcamentos ativos e solicitacoes pendentes do consumidor (pro overview do menu)
+def contar_overview(consumidor_id):
+    qtd_orcamentos = 0
+    qtd_pendentes = 0
+
+    # conta os orcamentos ativos
+    if arquivo_existe("banco_orcamentos.txt"):
+        orcamentos = ler_arquivo("banco_orcamentos.txt")
+        for orc in orcamentos:
+            if orc["Consumidor_ID"] == consumidor_id and orc["Status"] == "ativo":
+                qtd_orcamentos = qtd_orcamentos + 1
+
+    # conta as solicitacoes pendentes
+    if arquivo_existe("banco_solicitacoes.txt"):
+        solicitacoes = ler_arquivo("banco_solicitacoes.txt")
+        for sol in solicitacoes:
+            if sol["Consumidor_ID"] == consumidor_id and sol["Status"] == "pendente":
+                qtd_pendentes = qtd_pendentes + 1
+
+    return qtd_orcamentos, qtd_pendentes
+
+
 # funcao principal do projeto - compara 2 ou mais orcamentos lado a lado
 def comparar_orcamentos(consumidor_id):
     print("COMPARAR ORCAMENTOS:")
