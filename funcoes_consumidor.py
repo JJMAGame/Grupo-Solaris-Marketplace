@@ -48,7 +48,9 @@ def login_consumidor():
 # lista as empresas disponiveis com filtro por cidade
 def listar_empresas():
     print("EMPRESAS DISPONIVEIS:")
-    filtro = input("Filtrar por cidade (ou Enter para todas): ")
+    filtro = input("Filtrar por cidade (Enter = todas, 0 = voltar): ")
+    if filtro == "0":
+        return
     lista = ler_arquivo("banco_empresas.txt")
 
     encontrou = False
@@ -102,13 +104,23 @@ def solicitar_orcamento(consumidor_id):
     if empresa_escolhida is None:
         print("Empresa nao encontrada.")
         return
+    
+    
+    # verifica se ja existe solicitaçãoo pendente desse consumidor para essa empresa
+    if arquivo_existe("banco_solicitacoes.txt"):
+        solicitacoes_existentes = ler_arquivo("banco_solicitacoes.txt")
+        for sol in solicitacoes_existentes:
+            if sol["Consumidor_ID"] == consumidor_id and sol["Empresa_ID"] == escolha and sol["Status"] == "pendente":
+                print("Você ja tem uma solicitação pendente para " + nome_emp + ". Aguarde a resposta.")
+                return
+            
 
-    # Gera um ID para a solicitacao de orçamento
+    # Gera um ID para a solicitação de orçamento
     from datetime import datetime
     solicitacoes = ler_arquivo("banco_solicitacoes.txt") if arquivo_existe("banco_solicitacoes.txt") else []
     novo_id = str(proximo_id("banco_solicitacoes.txt"))
 
-    # Monta a solicitacao com os dados do consumidor
+    # Monta a solicitação com os dados do consumidor
     solicitacao = {
         "ID": novo_id,
         "Consumidor_ID": consumidor_id,
@@ -120,7 +132,7 @@ def solicitar_orcamento(consumidor_id):
         "Tipo_Imovel": consumidor_atual["Tipo_Imovel"]
     }      
     
-    # Grava a solicitacao no arquivo
+    # Grava a solicitação no arquivo
     gravar_linha("banco_solicitacoes.txt", solicitacao)
 
     print("===== Solicitação envida com sucesso =====")
@@ -142,7 +154,7 @@ def minhas_solicitacoes(consumidor_id):
     print("SUAS SOLICITACOES DE ORCAMENTO:")
 
     if not arquivo_existe("banco_solicitacoes.txt"):
-        print("Voce ainda nao fez nenhuma solicitacao.")
+        print("Voce ainda nao fez nenhuma solicitação.")
         return
     
     solicitacoes = ler_arquivo("banco_solicitacoes.txt")
@@ -160,13 +172,12 @@ def minhas_solicitacoes(consumidor_id):
                     nome_emp = emp["Nome"]
                     break
 
-            print(f"[{sol['ID']}] {nome_emp} - {sol['Data_Solicitacao']} - Status: {sol['Status']}")
-            print(f"    Data: {sol['Data_Solicitacao']}'")
-            print(f"    Status: {sol['Status']}")
-            print(f"    CEP: {sol['CEP']} | Valor conta: R$ {sol['Valor_Conta']} | Tipo imovel: {sol['Tipo_Imovel']}")
+            print("[" + sol["ID"] + "] " + nome_emp + " - Status: " + sol["Status"])
+            print("    Data: " + sol["Data_Solicitacao"])
+            print()
 
-        if not encontrou:
-            print("Voce ainda nao fez nenhuma solicitacao.")
+    if encontrou == False:
+        print("Você ainda não fez nenhuma solicitação. Solicite um orçamento para receber propostas de empresas.")
 
 
 # mostra os orcamentos que o consumidor recebeu
@@ -199,13 +210,39 @@ def meus_orcamentos(consumidor_id):
             print()
 
     if encontrou == False:
-        print("Voce ainda nao recebeu orcamentos.")
+        print("Você ainda não recebeu orcamentos.")
+
+
+# conta orcamentos ativos e solicitacoes pendentes do consumidor (pro overview do menu)
+def contar_overview(consumidor_id):
+    qtd_orcamentos = 0
+    qtd_pendentes = 0
+
+    # conta os orcamentos ativos
+    if arquivo_existe("banco_orcamentos.txt"):
+        orcamentos = ler_arquivo("banco_orcamentos.txt")
+        for orc in orcamentos:
+            if orc["Consumidor_ID"] == consumidor_id and orc["Status"] == "ativo":
+                qtd_orcamentos = qtd_orcamentos + 1
+
+    # conta as solicitacoes pendentes
+    if arquivo_existe("banco_solicitacoes.txt"):
+        solicitacoes = ler_arquivo("banco_solicitacoes.txt")
+        for sol in solicitacoes:
+            if sol["Consumidor_ID"] == consumidor_id and sol["Status"] == "pendente":
+                qtd_pendentes = qtd_pendentes + 1
+
+    return qtd_orcamentos, qtd_pendentes
+
 
 # funcao principal do projeto - compara 2 ou mais orcamentos lado a lado
 def comparar_orcamentos(consumidor_id):
     print("COMPARAR ORCAMENTOS:")
     meus_orcamentos(consumidor_id)  # primeiro mostra os orcamentos disponiveis
-    ids = input("Digite os IDs dos orcamentos separados por virgula: ").split(",")
+    ids = input("Digite os 2 IDs separados por virgula (0 para voltar): ")
+    if ids.strip() == "0":
+        return
+    ids = ids.split(",")
 
     lista = ler_arquivo("banco_orcamentos.txt")
     empresas = ler_arquivo("banco_empresas.txt")
@@ -213,33 +250,76 @@ def comparar_orcamentos(consumidor_id):
     # filtra so os orcamentos que o consumidor escolheu
     selecionados = []
     for orc in lista:
-        if orc["ID"].strip() in [x.strip() for x in ids] and orc["Consumidor_ID"] == consumidor_id:
+        if orc["ID"].strip() in [x.strip() for x in ids] and orc["Consumidor_ID"] == consumidor_id and orc["Status"] == "ativo":
             # busca o nome da empresa
             for emp in empresas:
                 if emp["ID"] == orc["Empresa_ID"]:
                     orc["Nome_Empresa"] = emp["Nome"]
             selecionados.append(orc)
 
-    # precisa de pelo menos 2 pra comparar
-    if len(selecionados) < 2:
-        print("Selecione pelo menos 2 orcamentos.")
+    # precisa de exatamente 2 pra comparar
+    if len(selecionados) != 2:
+        print("Selecione exatamente 2 orcamentos ativos para comparar.")
     else:
-        # mostra os dados de cada orcamento selecionado
+        # pega os dois orcamentos (a = primeiro, b = segundo)
+        a = selecionados[0]
+        b = selecionados[1]
+        nome_a = a.get("Nome_Empresa", "Empresa A")
+        nome_b = b.get("Nome_Empresa", "Empresa B")
+
         print("\n" + "=" * 50)
-        for orc in selecionados:
-            print("\n--- " + orc.get("Nome_Empresa", "Empresa") + " ---")
-            print("Valor total: R$ " + orc["Valor_Total"])
-            print("R$/Wp: R$ " + orc["RS_por_Wp"])
-            print("Potencia: " + orc["Potencia_kWp"] + " kWp")
-            print("Paineis: " + orc["Qtd_Paineis"] + "x " + orc["Painel"])
-            print("Inversor: " + orc["Inversor"] + " (" + orc["Tipo_Inversor"] + ")")
-            # custos discriminados - o diferencial do nosso projeto
-            print("CUSTOS DISCRIMINADOS:")
-            print("  Paineis: R$ " + orc["Custo_Paineis"])
-            print("  Inversor: R$ " + orc["Custo_Inversor"])
-            print("  Mao de obra: R$ " + orc["Custo_Mao_Obra"])
-            print("  Taxas: R$ " + orc["Custo_Taxas"])
+        print("COMPARACAO: " + nome_a + "  x  " + nome_b)
+        print("=" * 50)
+
+        # lista de criterios: (nome na tela, campo no arquivo, quem ganha)
+        criterios = [
+            ("Valor total (R$)", "Valor_Total", "menor"),
+            ("R$/Wp", "RS_por_Wp", "menor"),
+            ("Potencia (kWp)", "Potencia_kWp", "maior"),
+            ("Custo paineis (R$)", "Custo_Paineis", "menor"),
+            ("Custo inversor (R$)", "Custo_Inversor", "menor"),
+            ("Custo mao de obra (R$)", "Custo_Mao_Obra", "menor"),
+            ("Custo taxas (R$)", "Custo_Taxas", "menor")
+        ]
+
+        # passa por cada criterio e calcula a diferenca
+        for nome, campo, regra in criterios:
+            valor_a = float(a[campo])
+            valor_b = float(b[campo])
+            diferenca = abs(valor_a - valor_b)
+            # calcula o percentual da diferenca em cima do menor valor
+            menor_valor = min(valor_a, valor_b)
+            if menor_valor > 0:
+                percentual = round((diferenca / menor_valor) * 100, 1)
+            else:
+                percentual = 0
+
+            # decide quem ganha nesse criterio
+            if valor_a == valor_b:
+                melhor = "Empate"
+            elif regra == "menor":
+                if valor_a < valor_b:
+                    melhor = nome_a
+                else:
+                    melhor = nome_b
+            else:
+                if valor_a > valor_b:
+                    melhor = nome_a
+                else:
+                    melhor = nome_b
+
+            print("\n" + nome + ":")
+            print("  " + nome_a + ": " + str(valor_a) + "  |  " + nome_b + ": " + str(valor_b))
+            print("  Diferenca: " + str(round(diferenca, 2)) + " (" + str(percentual) + "%)  ->  Melhor: " + melhor)
+
+        # especificacoes tecnicas lado a lado (nao tem como calcular diferenca, sao textos)
+        print("\nESPECIFICACOES:")
+        print("  Painel: " + a["Painel"] + "  |  " + b["Painel"])
+        print("  Inversor: " + a["Inversor"] + " (" + a["Tipo_Inversor"] + ")  |  " + b["Inversor"] + " (" + b["Tipo_Inversor"] + ")")
+
+
         print("\n" + "=" * 50)
+
 
 # funcao que muda o status de um orcamento pra "removido" no txt
 def atualizar_status(orc_id, consumidor_id):
@@ -271,5 +351,12 @@ def atualizar_status(orc_id, consumidor_id):
 # funcao que o consumidor usa pra remover um orcamento da lista
 def remover_orcamento(consumidor_id):
     meus_orcamentos(consumidor_id)  # mostra os orcamentos primeiro
-    orc_id = input("ID do orcamento para remover: ")
-    atualizar_status(orc_id, consumidor_id)
+    orc_id = input("ID do orcamento para remover (0 para voltar): ")
+    if orc_id == "0" or orc_id.strip() == "":
+        return
+    # confirma antes de remover (acao destrutiva)
+    confirma = input("Tem certeza que deseja remover o orcamento " + orc_id + "? (s/n): ")
+    if confirma.lower() == "s":
+        atualizar_status(orc_id, consumidor_id)
+    else:
+        print("Remocao cancelada.")
