@@ -284,6 +284,12 @@ def comparar_orcamentos(consumidor_id):
             print("  " + nome_a + ": " + str(valor_a) + "  |  " + nome_b + ": " + str(valor_b))
             print("  Diferenca: " + str(round(diferenca, 2)) + " (" + str(percentual) + "%)  ->  Melhor: " + melhor)
 
+        # especificacoes tecnicas lado a lado (nao tem como calcular diferenca, sao textos)
+        print("\nESPECIFICACOES:")
+        print("  Painel: " + a["Painel"] + "  |  " + b["Painel"])
+        print("  Inversor: " + a["Inversor"] + " (" + a["Tipo_Inversor"] + ")  |  " + b["Inversor"] + " (" + b["Tipo_Inversor"] + ")")
+
+
         print("\n" + "=" * 50)
 
 
