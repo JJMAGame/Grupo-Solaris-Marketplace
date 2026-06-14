@@ -1,5 +1,4 @@
 # importa as funcoes dos outros arquivos
-from funcoes_consumidor import cadastrar_consumidor, login_consumidor, listar_empresas, meus_orcamentos, comparar_orcamentos, remover_orcamento
 from funcoes_empresa import cadastrar_empresa, login_empresa, enviar_orcamento, orcamentos_enviados, ver_consumidores, ver_solicitacoes_recebidas
 from funcoes_consumidor import cadastrar_consumidor, login_consumidor, listar_empresas, meus_orcamentos, comparar_orcamentos, remover_orcamento, solicitar_orcamento, minhas_solicitacoes, contar_overview
 from funcoes_arquivo import verificar_cabecalho
