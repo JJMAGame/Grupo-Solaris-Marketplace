@@ -12,6 +12,8 @@ def menu_consumidor(usuario):
         print("\n" + "-" * 40)
         print("  Olá, " + usuario["Nome"] + "!")
         print("  Orçamentos recebidos: " + str(qtd_orc) + "  |  Solicitações pendentes: " + str(qtd_pend))
+        if qtd_orc >= 2:
+            print(" Você já pode comparar orçamentos! ")
         print("-" * 40)
         print("  1. Buscar empresas")
         print("  2. Solicitar orçamento")
