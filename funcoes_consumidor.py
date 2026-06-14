@@ -160,13 +160,12 @@ def minhas_solicitacoes(consumidor_id):
                     nome_emp = emp["Nome"]
                     break
 
-            print(f"[{sol['ID']}] {nome_emp} - {sol['Data_Solicitacao']} - Status: {sol['Status']}")
-            print(f"    Data: {sol['Data_Solicitacao']}'")
-            print(f"    Status: {sol['Status']}")
-            print(f"    CEP: {sol['CEP']} | Valor conta: R$ {sol['Valor_Conta']} | Tipo imovel: {sol['Tipo_Imovel']}")
+            print("[" + sol["ID"] + "] " + nome_emp + " - Status: " + sol["Status"])
+            print("    Data: " + sol["Data_Solicitacao"])
+            print()
 
-        if not encontrou:
-            print("Voce ainda nao fez nenhuma solicitacao.")
+    if encontrou == False:
+        print("Você ainda não fez nenhuma solicitacao. Solicite um orçamento para receber propostas de empresas.")
 
 
 # mostra os orcamentos que o consumidor recebeu
