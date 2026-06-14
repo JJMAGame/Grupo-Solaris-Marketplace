@@ -48,7 +48,9 @@ def login_consumidor():
 # lista as empresas disponiveis com filtro por cidade
 def listar_empresas():
     print("EMPRESAS DISPONIVEIS:")
-    filtro = input("Filtrar por cidade (ou Enter para todas): ")
+    filtro = input("Filtrar por cidade (Enter = todas, 0 = voltar): ")
+    if filtro == "0":
+        return
     lista = ler_arquivo("banco_empresas.txt")
 
     encontrou = False
@@ -237,7 +239,10 @@ def contar_overview(consumidor_id):
 def comparar_orcamentos(consumidor_id):
     print("COMPARAR ORCAMENTOS:")
     meus_orcamentos(consumidor_id)  # primeiro mostra os orcamentos disponiveis
-    ids = input("Digite os IDs dos orcamentos separados por virgula: ").split(",")
+    ids = input("Digite os 2 IDs separados por virgula (0 para voltar): ")
+    if ids.strip() == "0":
+        return
+    ids = ids.split(",")
 
     lista = ler_arquivo("banco_orcamentos.txt")
     empresas = ler_arquivo("banco_empresas.txt")
@@ -346,5 +351,12 @@ def atualizar_status(orc_id, consumidor_id):
 # funcao que o consumidor usa pra remover um orcamento da lista
 def remover_orcamento(consumidor_id):
     meus_orcamentos(consumidor_id)  # mostra os orcamentos primeiro
-    orc_id = input("ID do orcamento para remover: ")
-    atualizar_status(orc_id, consumidor_id)
+    orc_id = input("ID do orcamento para remover (0 para voltar): ")
+    if orc_id == "0" or orc_id.strip() == "":
+        return
+    # confirma antes de remover (acao destrutiva)
+    confirma = input("Tem certeza que deseja remover o orcamento " + orc_id + "? (s/n): ")
+    if confirma.lower() == "s":
+        atualizar_status(orc_id, consumidor_id)
+    else:
+        print("Remocao cancelada.")
