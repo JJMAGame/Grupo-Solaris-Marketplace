@@ -102,13 +102,23 @@ def solicitar_orcamento(consumidor_id):
     if empresa_escolhida is None:
         print("Empresa nao encontrada.")
         return
+    
+    
+    # verifica se ja existe solicitaçãoo pendente desse consumidor para essa empresa
+    if arquivo_existe("banco_solicitacoes.txt"):
+        solicitacoes_existentes = ler_arquivo("banco_solicitacoes.txt")
+        for sol in solicitacoes_existentes:
+            if sol["Consumidor_ID"] == consumidor_id and sol["Empresa_ID"] == escolha and sol["Status"] == "pendente":
+                print("Você ja tem uma solicitação pendente para " + nome_emp + ". Aguarde a resposta.")
+                return
+            
 
-    # Gera um ID para a solicitacao de orçamento
+    # Gera um ID para a solicitação de orçamento
     from datetime import datetime
     solicitacoes = ler_arquivo("banco_solicitacoes.txt") if arquivo_existe("banco_solicitacoes.txt") else []
     novo_id = str(proximo_id("banco_solicitacoes.txt"))
 
-    # Monta a solicitacao com os dados do consumidor
+    # Monta a solicitação com os dados do consumidor
     solicitacao = {
         "ID": novo_id,
         "Consumidor_ID": consumidor_id,
@@ -120,7 +130,7 @@ def solicitar_orcamento(consumidor_id):
         "Tipo_Imovel": consumidor_atual["Tipo_Imovel"]
     }      
     
-    # Grava a solicitacao no arquivo
+    # Grava a solicitação no arquivo
     gravar_linha("banco_solicitacoes.txt", solicitacao)
 
     print("===== Solicitação envida com sucesso =====")
@@ -142,7 +152,7 @@ def minhas_solicitacoes(consumidor_id):
     print("SUAS SOLICITACOES DE ORCAMENTO:")
 
     if not arquivo_existe("banco_solicitacoes.txt"):
-        print("Voce ainda nao fez nenhuma solicitacao.")
+        print("Voce ainda nao fez nenhuma solicitação.")
         return
     
     solicitacoes = ler_arquivo("banco_solicitacoes.txt")
@@ -165,7 +175,7 @@ def minhas_solicitacoes(consumidor_id):
             print()
 
     if encontrou == False:
-        print("Você ainda não fez nenhuma solicitacao. Solicite um orçamento para receber propostas de empresas.")
+        print("Você ainda não fez nenhuma solicitação. Solicite um orçamento para receber propostas de empresas.")
 
 
 # mostra os orcamentos que o consumidor recebeu
