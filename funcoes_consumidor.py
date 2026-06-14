@@ -208,7 +208,7 @@ def meus_orcamentos(consumidor_id):
             print()
 
     if encontrou == False:
-        print("Voce ainda nao recebeu orcamentos.")
+        print("Você ainda não recebeu orcamentos.")
 
 # funcao principal do projeto - compara 2 ou mais orcamentos lado a lado
 def comparar_orcamentos(consumidor_id):
@@ -222,33 +222,64 @@ def comparar_orcamentos(consumidor_id):
     # filtra so os orcamentos que o consumidor escolheu
     selecionados = []
     for orc in lista:
-        if orc["ID"].strip() in [x.strip() for x in ids] and orc["Consumidor_ID"] == consumidor_id:
+        if orc["ID"].strip() in [x.strip() for x in ids] and orc["Consumidor_ID"] == consumidor_id and orc["Status"] == "ativo":
             # busca o nome da empresa
             for emp in empresas:
                 if emp["ID"] == orc["Empresa_ID"]:
                     orc["Nome_Empresa"] = emp["Nome"]
             selecionados.append(orc)
 
-    # precisa de pelo menos 2 pra comparar
-    if len(selecionados) < 2:
-        print("Selecione pelo menos 2 orcamentos.")
+    # precisa de exatamente 2 pra comparar
+    if len(selecionados) != 2:
+        print("Selecione exatamente 2 orcamentos ativos para comparar.")
     else:
-        # mostra os dados de cada orcamento selecionado
+        # pega os dois orcamentos (a = primeiro, b = segundo)
+        a = selecionados[0]
+        b = selecionados[1]
+        nome_a = a.get("Nome_Empresa", "Empresa A")
+        nome_b = b.get("Nome_Empresa", "Empresa B")
+
         print("\n" + "=" * 50)
-        for orc in selecionados:
-            print("\n--- " + orc.get("Nome_Empresa", "Empresa") + " ---")
-            print("Valor total: R$ " + orc["Valor_Total"])
-            print("R$/Wp: R$ " + orc["RS_por_Wp"])
-            print("Potencia: " + orc["Potencia_kWp"] + " kWp")
-            print("Paineis: " + orc["Qtd_Paineis"] + "x " + orc["Painel"])
-            print("Inversor: " + orc["Inversor"] + " (" + orc["Tipo_Inversor"] + ")")
-            # custos discriminados - o diferencial do nosso projeto
-            print("CUSTOS DISCRIMINADOS:")
-            print("  Paineis: R$ " + orc["Custo_Paineis"])
-            print("  Inversor: R$ " + orc["Custo_Inversor"])
-            print("  Mao de obra: R$ " + orc["Custo_Mao_Obra"])
-            print("  Taxas: R$ " + orc["Custo_Taxas"])
+        print("COMPARACAO: " + nome_a + "  x  " + nome_b)
+        print("=" * 50)
+
+        # lista de criterios: (nome na tela, campo no arquivo, quem ganha)
+        criterios = [
+            ("Valor total (R$)", "Valor_Total", "menor"),
+            ("R$/Wp", "RS_por_Wp", "menor"),
+            ("Potencia (kWp)", "Potencia_kWp", "maior"),
+            ("Custo paineis (R$)", "Custo_Paineis", "menor"),
+            ("Custo inversor (R$)", "Custo_Inversor", "menor"),
+            ("Custo mao de obra (R$)", "Custo_Mao_Obra", "menor"),
+            ("Custo taxas (R$)", "Custo_Taxas", "menor")
+        ]
+
+        # passa por cada criterio e calcula a diferenca
+        for nome, campo, regra in criterios:
+            valor_a = float(a[campo])
+            valor_b = float(b[campo])
+            diferenca = abs(valor_a - valor_b)
+
+            # decide quem ganha nesse criterio
+            if valor_a == valor_b:
+                melhor = "Empate"
+            elif regra == "menor":
+                if valor_a < valor_b:
+                    melhor = nome_a
+                else:
+                    melhor = nome_b
+            else:
+                if valor_a > valor_b:
+                    melhor = nome_a
+                else:
+                    melhor = nome_b
+
+            print("\n" + nome + ":")
+            print("  " + nome_a + ": " + str(valor_a) + "  |  " + nome_b + ": " + str(valor_b))
+            print("  Diferenca: " + str(round(diferenca, 2)) + "  ->  Melhor: " + melhor)
+
         print("\n" + "=" * 50)
+
 
 # funcao que muda o status de um orcamento pra "removido" no txt
 def atualizar_status(orc_id, consumidor_id):
