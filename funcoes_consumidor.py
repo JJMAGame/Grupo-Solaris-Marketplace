@@ -259,6 +259,12 @@ def comparar_orcamentos(consumidor_id):
             valor_a = float(a[campo])
             valor_b = float(b[campo])
             diferenca = abs(valor_a - valor_b)
+            # calcula o percentual da diferenca em cima do menor valor
+            menor_valor = min(valor_a, valor_b)
+            if menor_valor > 0:
+                percentual = round((diferenca / menor_valor) * 100, 1)
+            else:
+                percentual = 0
 
             # decide quem ganha nesse criterio
             if valor_a == valor_b:
@@ -276,7 +282,7 @@ def comparar_orcamentos(consumidor_id):
 
             print("\n" + nome + ":")
             print("  " + nome_a + ": " + str(valor_a) + "  |  " + nome_b + ": " + str(valor_b))
-            print("  Diferenca: " + str(round(diferenca, 2)) + "  ->  Melhor: " + melhor)
+            print("  Diferenca: " + str(round(diferenca, 2)) + " (" + str(percentual) + "%)  ->  Melhor: " + melhor)
 
         print("\n" + "=" * 50)
 
