@@ -66,8 +66,8 @@ def listar_empresas():
         print("Nenhuma empresa encontrada nessa cidade.")
 
 # consumidor solicita orcamento a uma empresa
-def solicitar_orcamento(consumidor_id):
-    print("\n=== SOLICITAR ORCAMENTO ===")
+def buscar_e_solicitar(consumidor_id):
+    print("\n=== VER EMPRESAS E SOLICITAR ORÇAMENTO ===")
     
     # Verifica se a  existe no banco de dados exclusivo para empresas
     
@@ -82,12 +82,24 @@ def solicitar_orcamento(consumidor_id):
         print("Consumidor nao encontrado.")
         return
 
-    # mostra as empresas disponiveis
+    # mostra as empresas disponiveis, com filtro de cidade
+    filtro = input("Filtrar por cidade (Enter = todas, 0 = voltar): ")
+    if filtro == "0":
+        return
+
     lista = ler_arquivo("banco_empresas.txt")
+    encontrou = False
     for emp in lista:
-        print("[" + emp["ID"] + "] " + emp["Nome"] + " - " + emp["Cidade"] + ", " + emp["UF"])
-        print("    " + emp["Descricao"])
-        print()
+        # mostra a empresa se o filtro estiver vazio ou se a cidade bater
+        if filtro == "" or emp["Cidade"].lower() == filtro.lower():
+            encontrou = True
+            print("[" + emp["ID"] + "] " + emp["Nome"] + " - " + emp["Cidade"] + ", " + emp["UF"])
+            print("    " + emp["Descricao"])
+            print()
+
+    if encontrou == False:
+        print("Nenhuma empresa encontrada nessa cidade.")
+        return
     
     escolha = input("Digite o ID da empresa (ou 0 para voltar): ")
     if escolha == "0":
