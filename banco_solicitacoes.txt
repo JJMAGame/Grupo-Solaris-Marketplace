@@ -4,3 +4,4 @@ ID;Consumidor_ID;Empresa_ID;Data_Solicitacao;Status;CEP;Valor_Conta;Tipo_Imovel
 5;5;1;2026-06-01 17:16:50;pendente;52060-380;230;Comercial
 6;5;2;2026-06-01 17:21:08;pendente;52060-380;230;Comercial
 7;6;1;2026-06-04 20:36:48;pendente;52070-380;2000;Rural
+8;1;3;2026-06-14 17:41:52;pendente;50000000;350.0;Casa
