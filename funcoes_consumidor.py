@@ -404,4 +404,81 @@ def remover_orcamento(consumidor_id, mostrar_lista=True):
     if confirma.lower() == "s":
         atualizar_status(orc_id, consumidor_id)
     else:
-        print("Remocao cancelada.")
+        print("Remoção cancelada.")
+
+# permite o consumidor editar os proprios dados
+def editar_perfil_consumidor(consumidor_id):
+    print("\n=== EDITAR PERFIL ===")
+
+    consumidores = ler_arquivo("banco_consumidores.txt")
+
+    # acha o consumidor logado e mostra os dados atuais
+    atual = None
+    for cons in consumidores:
+        if cons["ID"] == consumidor_id:
+            atual = cons
+            break
+
+    if atual is None:
+        print("Consumidor nao encontrado.")
+        return
+
+    print("Nome: " + atual["Nome"])
+    print("CEP: " + atual["CEP"])
+    print("Valor da conta: R$ " + atual["Valor_Conta"])
+    print("Tipo de imovel: " + atual["Tipo_Imovel"])
+
+    # menu: qual campo editar
+    print("\nO que deseja editar?")
+    print("  1. Nome")
+    print("  2. CEP")
+    print("  3. Valor da conta")
+    print("  4. Tipo de imovel")
+    print("  0. Voltar")
+    escolha = input("Escolha: ")
+
+    if escolha == "1":
+        campo = "Nome"
+        novo_valor = input("Novo nome: ")
+    elif escolha == "2":
+        campo = "CEP"
+        novo_valor = input("Novo CEP: ")
+    elif escolha == "3":
+        campo = "Valor_Conta"
+        novo_valor = input("Novo valor da conta (R$): ")
+    elif escolha == "4":
+        campo = "Tipo_Imovel"
+        novo_valor = input("Novo tipo de imovel: ")
+    elif escolha == "0":
+        return
+    else:
+        print("Opcao invalida.")
+        return
+
+    # regrava o arquivo trocando o campo escolhido
+    atualizar_campo_consumidor(consumidor_id, campo, novo_valor)
+    print("Perfil atualizado com sucesso!")
+
+
+    # regrava o arquivo de consumidores trocando um campo especifico
+def atualizar_campo_consumidor(consumidor_id, campo, novo_valor):
+    arquivo = open("banco_consumidores.txt", "r", encoding="utf-8")
+    linhas = arquivo.readlines()
+    arquivo.close()
+
+    # descobre a posicao do campo no cabecalho
+    cabecalho = linhas[0].strip().split(";")
+    posicao = cabecalho.index(campo)
+
+    novas = [linhas[0]]  # mantem o cabecalho
+    for linha in linhas[1:]:
+        if linha.strip() == "":
+            continue
+        valores = linha.strip().split(";")
+        if valores[0] == consumidor_id:
+            valores[posicao] = novo_valor  # troca o campo escolhido
+        novas.append(";".join(valores) + "\n")
+
+    arquivo = open("banco_consumidores.txt", "w", encoding="utf-8")
+    arquivo.writelines(novas)
+    arquivo.close()
