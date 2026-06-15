@@ -1,6 +1,6 @@
 # importa as funcoes dos outros arquivos
 from funcoes_empresa import cadastrar_empresa, login_empresa, enviar_orcamento, orcamentos_enviados, ver_consumidores, ver_solicitacoes_recebidas
-from funcoes_consumidor import cadastrar_consumidor, login_consumidor, listar_empresas, meus_orcamentos, comparar_orcamentos, remover_orcamento, solicitar_orcamento, minhas_solicitacoes, contar_overview
+from funcoes_consumidor import cadastrar_consumidor, login_consumidor, listar_empresas, meus_orcamentos, comparar_orcamentos, remover_orcamento, buscar_e_solicitar, minhas_solicitacoes, contar_overview
 from funcoes_arquivo import verificar_cabecalho
 
 
@@ -25,7 +25,7 @@ def menu_consumidor(usuario):
         if opcao == "1":
             listar_empresas()
         elif opcao == "2":
-            solicitar_orcamento(usuario["ID"])
+            buscar_e_solicitar(usuario["ID"])
         elif opcao == "3":
             minhas_solicitacoes(usuario["ID"])
         elif opcao == "4":
