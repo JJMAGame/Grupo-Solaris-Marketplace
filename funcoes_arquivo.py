@@ -225,3 +225,28 @@ def arquivar_linha(nome_arquivo_origem, nome_arquivo_destino, id_valor, campos_e
     except Exception as e:
         print(f"Erro ao arquivar linha: {e}")
         return False
+
+
+# atualiza o status de uma solicitacao (ex: de "pendente" para "respondido")
+def atualizar_status_solicitacao(solicitacao_id, novo_status):
+    arquivo = open("banco_solicitacoes.txt", "r", encoding="utf-8")
+    linhas = arquivo.readlines()
+    arquivo.close()
+
+    novas = [linhas[0]]  # mantem o cabecalho
+    atualizou = False
+
+    for linha in linhas[1:]:
+        if linha.strip() == "":
+            continue
+        valores = linha.strip().split(";")
+        if valores[0] == solicitacao_id:
+            valores[4] = novo_status
+            atualizou = True
+        novas.append(";".join(valores) + "\n")
+
+    arquivo = open("banco_solicitacoes.txt", "w", encoding="utf-8")
+    arquivo.writelines(novas)
+    arquivo.close()
+
+    return atualizou

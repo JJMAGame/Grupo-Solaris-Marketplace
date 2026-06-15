@@ -127,6 +127,16 @@ def buscar_e_solicitar(consumidor_id):
                 return
             
 
+    # mostra os dados da empresa e pede confirmacao antes de enviar
+    print("\nEmpresa escolhida:")
+    print("  " + empresa_escolhida["Nome"] + " - " + empresa_escolhida["Cidade"] + ", " + empresa_escolhida["UF"])
+    print("  " + empresa_escolhida["Descricao"])
+    confirma = input("Confirma o envio da solicitação? (sim/não): ")
+    if confirma.lower() != "sim":
+        print("Solicitação cancelada.")
+        return
+    
+    
     # Gera um ID para a solicitação de orçamento
     from datetime import datetime
     solicitacoes = ler_arquivo("banco_solicitacoes.txt") if arquivo_existe("banco_solicitacoes.txt") else []

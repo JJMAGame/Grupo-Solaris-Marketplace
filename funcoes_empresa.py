@@ -1,7 +1,7 @@
 # === FUNCOES DA EMPRESA ===
 # tudo que a empresa integradora faz no sistema
 
-from funcoes_arquivo import ler_arquivo, gravar_linha,deletar_linha, arquivar_linha ,proximo_id
+from funcoes_arquivo import ler_arquivo, gravar_linha,deletar_linha, arquivar_linha ,proximo_id, atualizar_status_solicitacao
 
 def arquivo_existe(nome_arquivo):
     try:
@@ -64,46 +64,59 @@ def ver_consumidores():
         for c in lista:
             print("[" + c["ID"] + "] " + c["Nome"] + " - CEP: " + c["CEP"] + " - Conta: R$ " + c["Valor_Conta"] + "/mes - " + c["Tipo_Imovel"])
 
+# mostra as solicitacoes que a empresa recebeu e deixa responder uma delas
 def ver_solicitacoes_recebidas(empresa_id):
-    print("SOLICITAÇÕES RECEBIDAS:")
+    print("SOLICITACOES RECEBIDAS:")
 
-    if not arquivo_existe("banco_orcamentos.txt"):
+    if not arquivo_existe("banco_solicitacoes.txt"):
         print("Nenhuma solicitacao recebida ainda.")
         return
-    
+
     solicitacoes = ler_arquivo("banco_solicitacoes.txt")
     consumidores = ler_arquivo("banco_consumidores.txt")
 
-    #Filtra os orcamentos recebidos para a empresa logada
-    minhas_solicitacoes = [sol for sol in solicitacoes if sol["Empresa_ID"] == empresa_id]
+    # filtra so as solicitacoes pendentes dessa empresa
+    minhas = []
+    for sol in solicitacoes:
+        if sol["Empresa_ID"] == empresa_id and sol["Status"] == "pendente":
+            minhas.append(sol)
 
-    if len(minhas_solicitacoes) == 0:
-        print("Nenhuma solicitacao recebida ainda.")
+    if len(minhas) == 0:
+        print("Nenhuma solicitacao pendente.")
         return
-    
-    print(f"Total de solicitações recebidas: {len(minhas_solicitacoes)}")
+
+    print("Total de solicitacoes pendentes: " + str(len(minhas)))
     print("-" * 50)
 
-    for sol in minhas_solicitacoes:
-        # Busca o nome do consumidor que enviou a solicitação
+    # PASSO 1: mostra a lista inteira, sem interromper
+    for sol in minhas:
+        # busca o nome do consumidor que enviou a solicitacao
         nome_cons = "Consumidor " + sol["Consumidor_ID"]
         for cons in consumidores:
             if cons["ID"] == sol["Consumidor_ID"]:
                 nome_cons = cons["Nome"]
-                break    
+                break
 
-        print(f"[{sol['ID']}] De: {nome_cons} - Status: {sol['Status']}")
-        print(f"    Data: {sol['Data_Solicitacao']}")
-        print(f"    Status: {sol['Status']}")
-        print(f"    Dados: CEP {sol['CEP']} | Conta R$ {sol['Valor_Conta']} | {sol['Tipo_Imovel']}")
+        print("[" + sol["ID"] + "] De: " + nome_cons + " - " + sol["Data_Solicitacao"])
+        print("    CEP: " + sol["CEP"] + " | Conta: R$ " + sol["Valor_Conta"] + " | Imovel: " + sol["Tipo_Imovel"])
+        print()
 
-        # Se estiver pendente, pergunta se quer enviar orçamento
-        resposta = input("Deseja enviar um orçamento para esta solicitação? (s/n): ")
-        if resposta.lower() == "s":
-            # Envia o orçamento
-            enviar_orcamento_para_solicitacao(empresa_id, sol["Consumidor_ID"], sol["ID"])
-        else:
-            print("Solicitação mantida como pendente.\n")
+    # PASSO 2: pergunta UMA vez se quer responder alguma
+    escolha = input("Digite o ID da solicitacao que deseja responder (0 para voltar): ")
+    if escolha == "0" or escolha.strip() == "":
+        return
+
+    # verifica se o ID digitado esta na lista de pendentes dessa empresa
+    solicitacao_escolhida = None
+    for sol in minhas:
+        if sol["ID"] == escolha:
+            solicitacao_escolhida = sol
+            break
+
+    if solicitacao_escolhida is None:
+        print("Solicitacao nao encontrada.")
+    else:
+        enviar_orcamento_para_solicitacao(empresa_id, solicitacao_escolhida["Consumidor_ID"], solicitacao_escolhida["ID"])
 
 def enviar_orcamento_para_solicitacao(empresa_id, consumidor_id, solicitacao_id):
         print(f"\n=== RESPONDENDO SOLICITACAO #{solicitacao_id} ===")
@@ -166,21 +179,11 @@ def enviar_orcamento_para_solicitacao(empresa_id, consumidor_id, solicitacao_id)
        }
         gravar_linha("banco_orcamentos.txt", novo_orcamento)
 
-        # ARQUIVAR E DELETA a solicitação do arquivo (em vez de atualizar status)
-        from datetime import datetime
-        arquivar_linha(
-        "banco_solicitacoes.txt", 
-        "banco_solicitacoes_arquivadas.txt", 
-        solicitacao_id,
-        campos_extras={
-            "Data_Resposta": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
-            "Empresa_Respondeu": empresa_id
-        }
-       )
-        deletar_linha("banco_solicitacoes.txt", solicitacao_id)
-    
-        print("\n Orçamento enviado com sucesso!")
-        print(f"A solicitação foi removida da lista de pendentes.")
+        # marca a solicitacao como respondida (em vez de deletarr, pra manter o historico)
+        atualizar_status_solicitacao(solicitacao_id, "respondido")
+
+        print("\nOrçamento enviado com sucesso!")
+        print("A solicitação foi marcada como respondida.")
 
 # funcao onde a empresa preenche e envia um orcamento personalizado
 def enviar_orcamento(empresa_id):
