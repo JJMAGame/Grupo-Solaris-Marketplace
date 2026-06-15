@@ -241,7 +241,7 @@ def enviar_orcamento(empresa_id):
     }
 
     gravar_linha("banco_orcamentos.txt", novo)  # grava no arquivo
-    print("Orcamento enviado com sucesso!")
+    print("Orçamento enviado com sucesso!")
 
 # mostra os orcamentos que a empresa ja enviou
 def orcamentos_enviados(empresa_id):
@@ -262,3 +262,80 @@ def orcamentos_enviados(empresa_id):
 
     if encontrou == False:
         print("Nenhum orçamento enviado ainda.")
+
+# permite a empresa editar os proprios dados
+def editar_perfil_empresa(empresa_id):
+    print("\n=== EDITAR PERFIL ===")
+
+    empresas = ler_arquivo("banco_empresas.txt")
+
+    # acha a empresa logada e mostra os dados atuais
+    atual = None
+    for emp in empresas:
+        if emp["ID"] == empresa_id:
+            atual = emp
+            break
+
+    if atual is None:
+        print("Empresa nao encontrada.")
+        return
+
+    print("Nome: " + atual["Nome"])
+    print("Cidade: " + atual["Cidade"])
+    print("UF: " + atual["UF"])
+    print("Descricao: " + atual["Descricao"])
+
+    # mini-menu: qual campo editar
+    print("\nO que deseja editar?")
+    print("  1. Nome")
+    print("  2. Cidade")
+    print("  3. UF")
+    print("  4. Descricao")
+    print("  0. Voltar")
+    escolha = input("Escolha: ")
+
+    if escolha == "1":
+        campo = "Nome"
+        novo_valor = input("Novo nome: ")
+    elif escolha == "2":
+        campo = "Cidade"
+        novo_valor = input("Nova cidade: ")
+    elif escolha == "3":
+        campo = "UF"
+        novo_valor = input("Novo UF: ")
+    elif escolha == "4":
+        campo = "Descricao"
+        novo_valor = input("Nova descricao: ")
+    elif escolha == "0":
+        return
+    else:
+        print("Opcao invalida.")
+        return
+
+    # regrava o arquivo trocando o campo escolhido
+    atualizar_campo_empresa(empresa_id, campo, novo_valor)
+    print("Perfil atualizado com sucesso!")
+
+
+# regrava o arquivo de empresas trocando um campo especifico
+def atualizar_campo_empresa(empresa_id, campo, novo_valor):
+    arquivo = open("banco_empresas.txt", "r", encoding="utf-8")
+    linhas = arquivo.readlines()
+    arquivo.close()
+
+    # descobre a posicao do campo no cabecalho
+    cabecalho = linhas[0].strip().split(";")
+    posicao = cabecalho.index(campo)
+
+    novas = [linhas[0]]  # mantem o cabecalho
+    for linha in linhas[1:]:
+        if linha.strip() == "":
+            continue
+        valores = linha.strip().split(";")
+        if valores[0] == empresa_id:
+            valores[posicao] = novo_valor
+        novas.append(";".join(valores) + "\n")
+
+    arquivo = open("banco_empresas.txt", "w", encoding="utf-8")
+    arquivo.writelines(novas)
+    arquivo.close()
