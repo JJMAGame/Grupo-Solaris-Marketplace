@@ -199,7 +199,7 @@ def meus_orcamentos(consumidor_id):
     # Verifica se o arquivo existe
     if not arquivo_existe("banco_orcamentos.txt"):
         print("Voce ainda nao recebeu orcamentos.")
-        return
+        return False
     
     lista = ler_arquivo("banco_orcamentos.txt")
     empresas = ler_arquivo("banco_empresas.txt")
@@ -223,6 +223,7 @@ def meus_orcamentos(consumidor_id):
 
     if encontrou == False:
         print("Você ainda não recebeu orcamentos.")
+    return encontrou
 
 
 # conta orcamentos ativos e solicitacoes pendentes do consumidor (pro overview do menu)
@@ -247,11 +248,32 @@ def contar_overview(consumidor_id):
     return qtd_orcamentos, qtd_pendentes
 
 
-# funcao principal do projeto - compara 2 ou mais orcamentos lado a lado
-def comparar_orcamentos(consumidor_id):
-    print("COMPARAR ORCAMENTOS:")
-    meus_orcamentos(consumidor_id)  # primeiro mostra os orcamentos disponiveis
-    ids = input("Digite os 2 IDs separados por virgula (0 para voltar): ")
+# hub de orcamentos: mostra a lista uma vez e oferece comparar ou remover dali
+def hub_orcamentos(consumidor_id):
+    tem_orcamento = meus_orcamentos(consumidor_id)  # mostra a lista e diz se achou algo
+
+    # se nao tem orcamento, nao adianta oferecer acoes
+    if tem_orcamento == False:
+        return
+
+    acao = input("\nO que deseja fazer? (C = comparar, R = remover, 0 = voltar): ")
+
+    if acao.lower() == "c":
+        comparar_orcamentos(consumidor_id, mostrar_lista=False)
+    elif acao.lower() == "r":
+        remover_orcamento(consumidor_id, mostrar_lista=False)
+    elif acao == "0":
+        return
+    else:
+        print("Opçãp inválida.")
+
+
+# função principal do projeto que compara 2 ou mais orcamentos lado a lado
+def comparar_orcamentos(consumidor_id, mostrar_lista=True):
+    print("COMPARAR ORÇAMENTOS:")
+    if mostrar_lista == True:
+        meus_orcamentos(consumidor_id)  # mostra os orcamentos so se pedido
+    ids = input("Digite os 2 IDs separados por vírgula (digite 0 para voltar): ")
     if ids.strip() == "0":
         return
     ids = ids.split(",")
@@ -361,8 +383,9 @@ def atualizar_status(orc_id, consumidor_id):
         print("Orcamento nao encontrado.")
 
 # funcao que o consumidor usa pra remover um orcamento da lista
-def remover_orcamento(consumidor_id):
-    meus_orcamentos(consumidor_id)  # mostra os orcamentos primeiro
+def remover_orcamento(consumidor_id, mostrar_lista=True):
+    if mostrar_lista == True:
+        meus_orcamentos(consumidor_id)  # mostra os orcamentos so se pedido
     orc_id = input("ID do orcamento para remover (0 para voltar): ")
     if orc_id == "0" or orc_id.strip() == "":
         return
