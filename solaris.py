@@ -1,6 +1,6 @@
 # importa as funcoes dos outros arquivos
 from funcoes_empresa import cadastrar_empresa, login_empresa, enviar_orcamento, orcamentos_enviados, ver_consumidores, ver_solicitacoes_recebidas
-from funcoes_consumidor import cadastrar_consumidor, login_consumidor, listar_empresas, meus_orcamentos, comparar_orcamentos, remover_orcamento, buscar_e_solicitar, minhas_solicitacoes, contar_overview
+from funcoes_consumidor import cadastrar_consumidor, login_consumidor, listar_empresas, meus_orcamentos, comparar_orcamentos, remover_orcamento, buscar_e_solicitar, minhas_solicitacoes, contar_overview, hub_orcamentos
 from funcoes_arquivo import verificar_cabecalho
 
 
@@ -14,31 +14,28 @@ def menu_consumidor(usuario):
         if qtd_orc >= 2:
             print(" Você já pode comparar orçamentos! ")
         print("-" * 40)
-        print("  1. Buscar empresas")
-        print("  2. Solicitar orçamento")
-        print("  3. Minhas solicitacoes")
-        print("  4. Meus orçamentos")
-        print("  5. Comparar orçamentos")
-        print("  6. Remover orçamento")
+        print("  1. Ver empresas e solicitar orçamento")
+        print("  2. Minhas solicitações")
+        print("  3. Meus orçamentos")
+        print("  4. Comparar orçamentos")
+        print("  5. Remover orçamento")
         print("  0. Sair da conta")
         opcao = input("Escolha: ")
         if opcao == "1":
-            listar_empresas()
-        elif opcao == "2":
             buscar_e_solicitar(usuario["ID"])
-        elif opcao == "3":
+        elif opcao == "2":
             minhas_solicitacoes(usuario["ID"])
+        elif opcao == "3":
+            hub_orcamentos(usuario["ID"])
         elif opcao == "4":
-            meus_orcamentos(usuario["ID"])
-        elif opcao == "5":
             comparar_orcamentos(usuario["ID"])
-        elif opcao == "6":
+        elif opcao == "5":
             remover_orcamento(usuario["ID"])
         elif opcao == "0":
             print("Saindo da conta...")
             break
         else:
-            print("Opcao invalida. Tente novamente.")
+            print("Opção inválida. Tente novamente.")
 
 # menu da empresa que aparece depois que ela faz login
 def menu_empresa(empresa):
