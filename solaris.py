@@ -43,25 +43,19 @@ def menu_empresa(empresa):
         print("\n--------------------------------------")
         print("  Painel: " + empresa["Nome"])
         print("----------------------------------------")
-        print("  1. Ver consumidores")
-        print("  2. Ver solicitacoes recebidas")
-        print("  3. Enviar orcamento livre")
-        print("  4. Orcamentos enviados")
+        print("  1. Ver solicitações recebidas")
+        print("  2. Orçamentos enviados")
         print("  0. Sair da conta")
         opcao = input("Escolha: ")
         if opcao == "1":
-            ver_consumidores()
-        elif opcao == "2":
             ver_solicitacoes_recebidas(empresa["ID"])
-        elif opcao == "3":
-            enviar_orcamento(empresa["ID"])
-        elif opcao == "4":
+        elif opcao == "2":
             orcamentos_enviados(empresa["ID"])
         elif opcao == "0":
             print("Saindo...")
             break
         else:
-            print("Opcao invalida. Tente novamente.")
+            print("Opção inválida. Tente novamente.")
 
 # menu principal - primeira tela do sistema
 def menu_principal():
