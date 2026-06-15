@@ -1,5 +1,5 @@
 # importa as funcoes dos outros arquivos
-from funcoes_empresa import cadastrar_empresa, login_empresa, enviar_orcamento, orcamentos_enviados, ver_consumidores, ver_solicitacoes_recebidas
+from funcoes_empresa import cadastrar_empresa, login_empresa, enviar_orcamento, orcamentos_enviados, ver_consumidores, ver_solicitacoes_recebidas, editar_perfil_empresa
 from funcoes_consumidor import cadastrar_consumidor, login_consumidor, listar_empresas, meus_orcamentos, comparar_orcamentos, remover_orcamento, buscar_e_solicitar, minhas_solicitacoes, contar_overview, hub_orcamentos, editar_perfil_consumidor
 from funcoes_arquivo import verificar_cabecalho
 
@@ -48,12 +48,15 @@ def menu_empresa(empresa):
         print("----------------------------------------")
         print("  1. Ver solicitações recebidas")
         print("  2. Orçamentos enviados")
+        print("  3. Editar perfil")
         print("  0. Sair da conta")
         opcao = input("Escolha: ")
         if opcao == "1":
             ver_solicitacoes_recebidas(empresa["ID"])
         elif opcao == "2":
             orcamentos_enviados(empresa["ID"])
+        elif opcao == "3":
+            editar_perfil_empresa(empresa["ID"])
         elif opcao == "0":
             print("Saindo...")
             break
