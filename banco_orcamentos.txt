@@ -5,3 +5,4 @@ ID;Empresa_ID;Consumidor_ID;Potencia_kWp;Qtd_Paineis;Painel;Inversor;Tipo_Invers
 4;3;9;100;20;Br;Inver;String;1000.0;1500.0;200.0;30.0;2730.0;0.03;ativo
 5;1;0;123;1231;23123;213;123;123.0;123.0;123.0;123.0;492.0;0.0;ativo
 6;1;10;200;20;Core;Antiga;Híbrido;2000.0;1000.0;300.0;30.0;3330.0;0.02;ativo
+7;1;9;5.5;10;Canadian Solar CS6W-555MS;Growatt MIN 5000TL-X;String;9500.0;4200.0;3500.0;1300.0;18500.0;3.36;ativo
