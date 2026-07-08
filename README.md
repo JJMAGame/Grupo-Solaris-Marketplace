@@ -1,2 +1,2 @@
 # Grupo-Solaris-Marketplace
-Um projeto feito no cesar school, sobre um site que mostra varias empresas que distribui paineis solares
+Marketplace de comparação de orçamentos de energia solar com campos padronizados — projeto acadêmico de GTI, CESAR School (Equipe 5, 2026.1)
